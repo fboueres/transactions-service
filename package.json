@@ -1,0 +1,22 @@
+{
+  "name": "transactions-service",
+  "version": "1.0.0",
+  "description": "CRUD of transactions according double-entry bookkeeping.",
+  "license": "ISC",
+  "author": "Fernando Boueres",
+  "main": "app.ts",
+  "scripts": {
+    "test": "npx jest"
+  },
+  "dependencies": {
+    "ts-node": "^10.9.2",
+    "typeorm": "^0.3.27",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.10.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5"
+  }
+}
