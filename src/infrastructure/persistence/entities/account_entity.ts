@@ -6,7 +6,7 @@ export class AccountEntity {
     @PrimaryColumn("varchar", { length: 26})
     id!: string;
 
-    @Column("name")
+    @Column()
     name!: string;
 
     @OneToMany(() => TransactionEntity, (transaction) => transaction.sending_account)
