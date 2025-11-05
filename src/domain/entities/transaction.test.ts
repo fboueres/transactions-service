@@ -1,3 +1,4 @@
+import { ulid } from "ulid";
 import { Account } from "./account";
 import { Transaction } from "./transaction";
 
@@ -7,6 +8,7 @@ describe("Transaction Entity", () => {
         const receivingAccount = new Account("2", "Receiving Account");
 
         const transaction = new Transaction(
+            ulid(),
             sendingAccount,
             receivingAccount,
             500.00
