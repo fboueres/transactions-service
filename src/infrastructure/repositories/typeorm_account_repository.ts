@@ -16,11 +16,16 @@ export class TypeORMAccountRepository implements AccountRepository {
         await this.repository.save(accountEntity);
     }
 
-    async findById(id: string): Promise<Account | null> {
+    async findById(id: string): Promise<Account> {
         const accountEntity = await this.repository.findOne({
             where: { id },
             relations: ["sent_transactions", "received_transactions"],
         });
-        return accountEntity ? AccountMapper.toDomain(accountEntity) : null;
+        
+        if (!accountEntity) {
+            throw new Error("No account was found.");
+        }
+
+        return AccountMapper.toDomain(accountEntity);
     }
 }
