@@ -9,6 +9,7 @@
     "test": "npx jest"
   },
   "dependencies": {
+    "express": "^5.1.0",
     "sqlite3": "^5.1.7",
     "ts-node": "^10.9.2",
     "tslib": "^2.8.1",
@@ -17,9 +18,12 @@
     "ulid": "^3.0.1"
   },
   "devDependencies": {
+    "@types/express": "^5.0.5",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.10.0",
+    "@types/supertest": "^6.0.3",
     "jest": "^30.2.0",
+    "supertest": "^7.1.4",
     "ts-jest": "^29.4.5"
   }
 }

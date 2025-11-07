@@ -14,7 +14,7 @@ export class FakeAccountRepository implements AccountRepository {
     ];
     
     async save(account: Account): Promise<void> {
-        throw new Error("Method not implemented.");
+        this.accounts.push(account);
     }
 
     async findById(id: string): Promise<Account> {
