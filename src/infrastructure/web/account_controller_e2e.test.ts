@@ -55,7 +55,8 @@ describe("AccountController", () => {
         });
 
         expect(res.status).toBe(201);
-        expect(res.body._links.self).not.toBeNull();
-        expect(res.body.name).not.toBeNull();
+        expect(res.body).toHaveProperty("_links.self");
+        expect(res.body).toHaveProperty("id");
+        expect(res.body).toHaveProperty("name");
     });
 });

@@ -17,7 +17,10 @@ export class AccountController {
         return res
             .status(201)
             .json({
-                _links: `/accounts/${account.getId()}`,
+                _links: {
+                    self: `/accounts/${account.getId()}`,
+                },
+                id: account.getId(),
                 name: account.getName(),
             });
     }
