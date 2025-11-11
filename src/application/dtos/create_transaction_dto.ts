@@ -1,5 +1,5 @@
 export interface CreateTransactionDTO {
-    sendingAccountId: string,
-    receivingAccountId: string,
-    amount: number,
+  sendingAccountId: string;
+  receivingAccountId: string;
+  amount: number;
 }

@@ -5,31 +5,31 @@ import { CreateTransactionDTO } from "../dtos/create_transaction_dto";
 import { AccountService } from "./account_service";
 
 export class TransactionService {
-    constructor(
-        private readonly transactionRepository: TransactionRepository,
-        private readonly accountService: AccountService,
-    ) {}
+  constructor(
+    private readonly transactionRepository: TransactionRepository,
+    private readonly accountService: AccountService,
+  ) {}
 
-    async createTransaction(dto: CreateTransactionDTO): Promise<Transaction> {
-        const sendingAccount = await this.accountService.findAccountById(
-            dto.sendingAccountId
-        );
-        const receivingAccount = await this.accountService.findAccountById(
-            dto.receivingAccountId
-        );
+  async createTransaction(dto: CreateTransactionDTO): Promise<Transaction> {
+    const sendingAccount = await this.accountService.findAccountById(
+      dto.sendingAccountId,
+    );
+    const receivingAccount = await this.accountService.findAccountById(
+      dto.receivingAccountId,
+    );
 
-        const transaction = new Transaction(
-            ulid(),
-            sendingAccount,
-            receivingAccount,
-            dto.amount,
-        );
+    const transaction = new Transaction(
+      ulid(),
+      sendingAccount,
+      receivingAccount,
+      dto.amount,
+    );
 
-        await this.transactionRepository.save(transaction);
-        return transaction;
-    }
+    await this.transactionRepository.save(transaction);
+    return transaction;
+  }
 
-    async findTransactionById(id: string): Promise<Transaction> {
-        return this.transactionRepository.findById(id);
-    }
+  async findTransactionById(id: string): Promise<Transaction> {
+    return this.transactionRepository.findById(id);
+  }
 }

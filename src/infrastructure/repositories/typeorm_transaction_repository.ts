@@ -5,27 +5,27 @@ import { TransactionMapper } from "../persistence/mappers/transaction_mapper";
 import { Transaction } from "../../domain/entities/transaction";
 
 export class TypeORMTransactionRepository implements TransactionRepository {
-    private readonly repository: Repository<TransactionEntity>;
+  private readonly repository: Repository<TransactionEntity>;
 
-    constructor(repository: Repository<TransactionEntity>) {
-        this.repository = repository;
+  constructor(repository: Repository<TransactionEntity>) {
+    this.repository = repository;
+  }
+
+  async save(transaction: Transaction): Promise<void> {
+    const transactionEntity = TransactionMapper.toPersistente(transaction);
+    await this.repository.save(transactionEntity);
+  }
+
+  async findById(id: string): Promise<Transaction> {
+    const transactionEntity = await this.repository.findOne({
+      where: { id },
+      relations: ["sending_account", "receiving_account"],
+    });
+
+    if (!transactionEntity) {
+      throw new Error("Transaction not found.");
     }
 
-    async save(transaction: Transaction): Promise<void> {
-        const transactionEntity = TransactionMapper.toPersistente(transaction);
-        await this.repository.save(transactionEntity);        
-    }
-
-    async findById(id: string): Promise<Transaction> {
-        const transactionEntity = await this.repository.findOne({
-            where: { id },
-            relations: ["sending_account", "receiving_account"],
-        });
-
-        if (!transactionEntity) {
-            throw new Error("Transaction not found.");    
-        }
-
-        return TransactionMapper.toDomain(transactionEntity);
-    }   
+    return TransactionMapper.toDomain(transactionEntity);
+  }
 }

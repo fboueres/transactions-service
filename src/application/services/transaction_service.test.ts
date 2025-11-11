@@ -7,70 +7,76 @@ import { FakeTransactionRepository } from "../../infrastructure/repositories/fak
 jest.mock("./account_service");
 
 describe("TransactionService", () => {
-    let transactionService: TransactionService;
-    let fakeTransactionRepository: FakeTransactionRepository;
-    let mockAccountService: jest.Mocked<AccountService>;
+  let transactionService: TransactionService;
+  let fakeTransactionRepository: FakeTransactionRepository;
+  let mockAccountService: jest.Mocked<AccountService>;
 
-    beforeEach(() => {
-        jest.clearAllMocks();
+  beforeEach(() => {
+    jest.clearAllMocks();
 
-        const mockSendingAccount = {
-            getId: jest.fn().mockReturnValue("1"),
-        } as any;
-        
-        const mockReceivingAccount = {
-            getId: jest.fn().mockReturnValue("2"),
-        } as any;
-        
-        mockAccountService = {
-            findAccountById: jest.fn(),
-        } as any;
-        
-        mockAccountService.findAccountById
-            .mockImplementation(
-                (id: string) => {
-                    switch (id) {
-                        case "1":
-                            return Promise.resolve(mockSendingAccount);
-                        case "2":
-                            return Promise.resolve(mockReceivingAccount);
-                        default:
-                            throw new Error("No account was found.")    
-                    }
-                }
-            );
-        
-        fakeTransactionRepository = new FakeTransactionRepository();
+    const mockSendingAccount = {
+      getId: jest.fn().mockReturnValue("1"),
+    } as any;
 
-        transactionService = new TransactionService(
-            fakeTransactionRepository,
-            mockAccountService,
-        );
+    const mockReceivingAccount = {
+      getId: jest.fn().mockReturnValue("2"),
+    } as any;
 
+    mockAccountService = {
+      findAccountById: jest.fn(),
+    } as any;
+
+    mockAccountService.findAccountById.mockImplementation((id: string) => {
+      switch (id) {
+        case "1":
+          return Promise.resolve(mockSendingAccount);
+        case "2":
+          return Promise.resolve(mockReceivingAccount);
+        default:
+          throw new Error("No account was found.");
+      }
     });
-    
-    it("should create a transaction and return it by ID", async () => {
-        const transactionDTO: CreateTransactionDTO = {
-            sendingAccountId: "1",
-            receivingAccountId: "2",
-            amount: 500.00,
-        };
-        
-        const result = await transactionService.createTransaction(transactionDTO);
 
-        expect(result).not.toBeNull();
-        expect(result).toBeInstanceOf(Transaction);
-        expect(result?.getSendingAccount().getId()).toBe(transactionDTO.sendingAccountId);
-        expect(result?.getReceivingAccount().getId()).toBe(transactionDTO.receivingAccountId);
-        expect(result?.getAmount()).toBe(transactionDTO.amount);
+    fakeTransactionRepository = new FakeTransactionRepository();
 
-        const savedResult = await transactionService.findTransactionById(result.getId());
+    transactionService = new TransactionService(
+      fakeTransactionRepository,
+      mockAccountService,
+    );
+  });
 
-        expect(savedResult).not.toBeNull();
-        expect(savedResult).toBeInstanceOf(Transaction);
-        expect(savedResult?.getId()).toBe(result?.getId());
-        expect(savedResult?.getSendingAccount().getId()).toBe(result?.getSendingAccount().getId());
-        expect(savedResult?.getReceivingAccount().getId()).toBe(result?.getReceivingAccount().getId());
-        expect(savedResult?.getAmount()).toBe(result?.getAmount());
-    });
+  it("should create a transaction and return it by ID", async () => {
+    const transactionDTO: CreateTransactionDTO = {
+      sendingAccountId: "1",
+      receivingAccountId: "2",
+      amount: 500.0,
+    };
+
+    const result = await transactionService.createTransaction(transactionDTO);
+
+    expect(result).not.toBeNull();
+    expect(result).toBeInstanceOf(Transaction);
+    expect(result?.getSendingAccount().getId()).toBe(
+      transactionDTO.sendingAccountId,
+    );
+    expect(result?.getReceivingAccount().getId()).toBe(
+      transactionDTO.receivingAccountId,
+    );
+    expect(result?.getAmount()).toBe(transactionDTO.amount);
+
+    const savedResult = await transactionService.findTransactionById(
+      result.getId(),
+    );
+
+    expect(savedResult).not.toBeNull();
+    expect(savedResult).toBeInstanceOf(Transaction);
+    expect(savedResult?.getId()).toBe(result?.getId());
+    expect(savedResult?.getSendingAccount().getId()).toBe(
+      result?.getSendingAccount().getId(),
+    );
+    expect(savedResult?.getReceivingAccount().getId()).toBe(
+      result?.getReceivingAccount().getId(),
+    );
+    expect(savedResult?.getAmount()).toBe(result?.getAmount());
+  });
 });
