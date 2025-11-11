@@ -29,7 +29,7 @@ export class TransactionService {
         return transaction;
     }
 
-    async findTransactionById(id: string): Promise<Transaction | null> {
+    async findTransactionById(id: string): Promise<Transaction> {
         return this.transactionRepository.findById(id);
     }
 }

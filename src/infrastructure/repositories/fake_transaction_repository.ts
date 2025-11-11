@@ -8,9 +8,15 @@ export class FakeTransactionRepository implements TransactionRepository {
         this.transactions.push(transaction);
     }
 
-    async findById(id: string): Promise<Transaction | null> {
-        return this.transactions.find(
+    async findById(id: string): Promise<Transaction> {
+        const transaction = this.transactions.find(
             (transaction) => transaction.getId() === id
-        ) || null;
+        );
+
+        if(!transaction) {
+            throw new Error("Transaction not found.");
+        }
+
+        return transaction;
     }
 }

@@ -61,6 +61,9 @@ beforeAll(async () => {
     app.post("/transactions", (req, res, next) => {
         transactionController.createTransaction(req, res).catch((err) => next(err));
     });
+    app.get("/transactions/:id", (req, res, next) => {
+        transactionController.getTransaction(req, res).catch((err) => next(err));
+    });
 });
 
 afterAll(async () => {
@@ -136,8 +139,91 @@ describe("TransactionController E2E", () => {
             );
         expect(res.body)
             .toHaveProperty(
+                "id",
+            );
+        expect(res.body)
+            .toHaveProperty(
                 "amount",
                 500
             );
+    });
+
+    it("should read a transaction", async () => {
+        const sendingAccount = await request(app)
+            .post("/accounts")
+            .send({
+                name: "Sending Account",
+            });
+        const receivingAccount = await request(app)
+            .post("/accounts")
+            .send({
+                name: "Receiving Account",
+            });
+        const transaction = await request(app)
+            .post("/transactions")
+            .send({
+                sending_account_id: sendingAccount.body.id,
+                receiving_account_id: receivingAccount.body.id,
+                amount: 500.00,
+            });
+
+        const res = await request(app)
+            .get(`/transactions/${transaction.body.id}`);
+            
+        expect(res.status).toBe(200);
+        expect(res.body)
+            .toHaveProperty(
+                "_links.self",
+                `/transactions/${transaction.body.id}`,
+            );
+        
+        expect(res.body)
+            .toHaveProperty(
+                "_embedded.sending_account._links.self",
+                `/accounts/${sendingAccount.body.id}`
+            );
+        expect(res.body)
+            .toHaveProperty(
+                "_embedded.sending_account.id",
+                sendingAccount.body.id
+            );
+        expect(res.body)
+            .toHaveProperty(
+                "_embedded.sending_account.name",
+                sendingAccount.body.name
+            );
+        
+        expect(res.body)
+            .toHaveProperty(
+                "_embedded.receiving_account._links.self",
+                `/accounts/${receivingAccount.body.id}`
+            );
+        expect(res.body)
+            .toHaveProperty(
+                "_embedded.receiving_account.id",
+                receivingAccount.body.id
+            );
+        expect(res.body)
+            .toHaveProperty(
+                "_embedded.receiving_account.name",
+                receivingAccount.body.name
+            );
+
+        expect(res.body)
+            .toHaveProperty(
+                "sending_account_id",
+                sendingAccount.body.id
+            );
+        expect(res.body)
+            .toHaveProperty(
+                "receiving_account_id",
+                receivingAccount.body.id
+            );
+        expect(res.body)
+            .toHaveProperty(
+                "amount",
+                500
+            );
+
     });
 });

@@ -16,11 +16,16 @@ export class TypeORMTransactionRepository implements TransactionRepository {
         await this.repository.save(transactionEntity);        
     }
 
-    async findById(id: string): Promise<Transaction | null> {
+    async findById(id: string): Promise<Transaction> {
         const transactionEntity = await this.repository.findOne({
             where: { id },
             relations: ["sending_account", "receiving_account"],
         });
-        return transactionEntity ? TransactionMapper.toDomain(transactionEntity) : null;
+
+        if (!transactionEntity) {
+            throw new Error("Transaction not found.");    
+        }
+
+        return TransactionMapper.toDomain(transactionEntity);
     }   
 }
