@@ -59,6 +59,9 @@ beforeAll(async () => {
     app.post("/transactions", (req, res, next) => {
         transactionController.createTransaction(req, res).catch((err) => next(err));
     });
+    app.delete("/transactions/:id", (req, res, next) => {
+        transactionController.deleteTransaction(req, res).catch((err) => next(err));
+    });
 });
 
 afterAll(async () => {
@@ -109,5 +112,32 @@ describe("TransactionController E2E", () => {
         expect(res.body.receiving_account_id)
             .toBe(receivingAccount.body.id);
         expect(res.body.amount).toBe(500);
+    });
+
+    
+    it("should delete a transaction", async () => {
+        const sendingAccount = await request(app)
+            .post("/accounts")
+            .send({
+                name: "Sending Account",
+            });
+
+        const receivingAccount = await request(app)
+            .post("/accounts")
+            .send({
+                name: "Receiving Account",
+            });
+        
+        const transaction = await request(app)
+            .post("/transactions")
+            .send({
+                sending_account_id: sendingAccount.body.id,
+                receiving_account_id: receivingAccount.body.id,
+                amount: 500.00,
+            });
+
+        const res = await request(app).delete(`/transactions${transaction.body.id}`);
+
+        expect(res.status).toBe(204);
     });
 });

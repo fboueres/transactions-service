@@ -78,4 +78,40 @@ describe("TypeORMTransactionRepository", () => {
         );
         expect(savedTransaction?.getAmount()).toBe(transaction.getAmount())
     });
+
+    it("should delete a transaction by it's ID", async () => {
+        const accountRepository = dataSource.getRepository(AccountEntity);
+        
+        const sendingAccountEntity_id = ulid();
+        const sendingAccountEntity = accountRepository.create({
+            id: sendingAccountEntity_id,
+            name: "Sending Account"
+        });
+        await accountRepository.save(sendingAccountEntity);
+        const sendingAccount = new Account(
+            sendingAccountEntity_id,
+            "Sending Account"
+        );
+
+        const receivingAccountEntity_id = ulid();
+        const receivingAccountEntity = accountRepository.create({
+            id: receivingAccountEntity_id,
+            name: "Receiving Account"
+        });
+        await accountRepository.save(receivingAccountEntity);
+        const receivingAccount = new Account(
+            receivingAccountEntity_id,
+            "Receiving Account"
+        );
+        
+        const transaction = new Transaction(
+            ulid(),
+            sendingAccount,
+            receivingAccount,
+            500.00
+        );
+        await transactionRepository.save(transaction);
+
+        expect(transactionRepository.deleteById(transaction.getId())).resolves.not.toThrow();
+    });
 });

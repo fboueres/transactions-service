@@ -23,4 +23,8 @@ export class TypeORMTransactionRepository implements TransactionRepository {
         });
         return transactionEntity ? TransactionMapper.toDomain(transactionEntity) : null;
     }   
+
+    async deleteById(id: string): Promise<void> {
+        await this.repository.delete(id);
+    }
 }

@@ -73,4 +73,16 @@ describe("TransactionService", () => {
         expect(savedResult?.getReceivingAccount().getId()).toBe(result?.getReceivingAccount().getId());
         expect(savedResult?.getAmount()).toBe(result?.getAmount());
     });
+
+    it("should delete a transaction by ID", async () => {
+        const transactionDTO: CreateTransactionDTO = {
+            sendingAccountId: "1",
+            receivingAccountId: "2",
+            amount: 500.00,
+        };
+        
+        const transaction = await transactionService.createTransaction(transactionDTO);
+
+        expect(await transactionService.deleteTransactionById(transaction.getId())).resolves.not.toThrow();
+    });
 });

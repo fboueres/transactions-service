@@ -32,4 +32,8 @@ export class TransactionService {
     async findTransactionById(id: string): Promise<Transaction | null> {
         return this.transactionRepository.findById(id);
     }
+    
+    async deleteTransactionById(id: string): Promise<void> {
+        return this.transactionRepository.deleteById(id);
+    }
 }

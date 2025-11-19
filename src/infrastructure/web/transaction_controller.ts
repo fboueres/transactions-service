@@ -39,4 +39,10 @@ export class TransactionController {
                 }
             });
     }
+
+    async deleteTransaction(req: Request, res: Response): Promise<Response> {
+        await this.transactionService.deleteTransactionById(req.params.id);
+
+        return res.status(204);
+    }
 }

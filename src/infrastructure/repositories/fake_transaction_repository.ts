@@ -13,4 +13,9 @@ export class FakeTransactionRepository implements TransactionRepository {
             (transaction) => transaction.getId() === id
         ) || null;
     }
+
+    async deleteById(id: string ): Promise<void> {
+        const idx = this.transactions.findIndex(item => item.getId() === id);
+        if (idx !== -1) this.transactions.splice(idx, 1);
+    }
 }
