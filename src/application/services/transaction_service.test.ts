@@ -83,6 +83,6 @@ describe("TransactionService", () => {
         
         const transaction = await transactionService.createTransaction(transactionDTO);
 
-        expect(await transactionService.deleteTransactionById(transaction.getId())).resolves.not.toThrow();
+        expect(transactionService.deleteTransactionById(transaction.getId())).resolves.not.toThrow();
     });
 });
